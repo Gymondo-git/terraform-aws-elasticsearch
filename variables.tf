@@ -52,10 +52,16 @@ variable "tags" {
   description = "Additional tags (e.g. `map('BusinessUnit','XYZ')`"
 }
 
+variable "create_default_security_group" {
+  type    = bool
+  default = true
+  description = "Whether to create a default security group"
+}
+
 variable "security_groups" {
   type        = list(string)
   default     = []
-  description = "List of security group IDs to be allowed to connect to the cluster"
+  description = "List of security group IDs to be allowed to connect to the cluster (will be added as source_security_group_id to the default security group)"
 }
 
 variable "ingress_port_range_start" {
@@ -73,7 +79,13 @@ variable "ingress_port_range_end" {
 variable "allowed_cidr_blocks" {
   type        = list(string)
   default     = []
-  description = "List of CIDR blocks to be allowed to connect to the cluster"
+  description = "List of CIDR blocks to be allowed to connect to the cluster (will be added as cidr_blocks to the default security group)"
+}
+
+variable "additional_security_groups" {
+  type        = list(string)
+  default     = []
+  description = "List of custom created security group IDs to be allowed to connect to the cluster"
 }
 
 variable "vpc_enabled" {
@@ -116,6 +128,12 @@ variable "instance_count" {
   type        = number
   description = "Number of data nodes in the cluster"
   default     = 4
+}
+
+variable "create_default_iam_role" {
+  type        = bool
+  description = "Whether to create a default access role"
+  default     = true
 }
 
 variable "iam_role_arns" {
@@ -315,4 +333,12 @@ variable "aws_ec2_service_name" {
   type        = list(string)
   default     = ["ec2.amazonaws.com"]
   description = "AWS EC2 Service Name"
+}
+
+locals {
+  trimmed_iam_role_arns = distinct(compact(var.iam_role_arns))
+  # if var.create_default_iam_role is set to true, add the roles arn to the list of allowed principals
+  iam_role_arns = var.create_default_iam_role ? concat(local.trimmed_iam_role_arns, aws_iam_role.elasticsearch_user.*.arn) : local.trimmed_iam_role_arns
+  # if var.create_default_iam_role is set to false and var.iam_role_arns is empty, we use ["*"] to allow any access
+  access_principals = var.create_default_iam_role == false && length(local.iam_role_arns) == 0 ? ["*"] : local.iam_role_arns
 }

@@ -143,6 +143,7 @@ Available targets:
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| additional_security_groups | List of custom created security group IDs to be allowed to connect to the cluster | list(string) | `<list>` | no |
 | advanced\_options | Key-value string pairs to specify advanced configuration options | `map(string)` | `{}` | no |
 | allowed\_cidr\_blocks | List of CIDR blocks to be allowed to connect to the cluster | `list(string)` | `[]` | no |
 | attributes | Additional attributes (e.g. `1`) | `list(string)` | `[]` | no |
@@ -196,6 +197,7 @@ Available targets:
 | vpc\_enabled | Set to false if ES should be deployed outside of VPC. | `bool` | `true` | no |
 | vpc\_id | VPC ID | `string` | `null` | no |
 | zone\_awareness\_enabled | Enable zone awareness for Elasticsearch cluster | `bool` | `true` | no |
+
 
 ## Outputs
 
