@@ -61,7 +61,7 @@ variable "create_default_security_group" {
 variable "security_groups" {
   type        = list(string)
   default     = []
-  description = "List of security group IDs to be allowed to connect to the cluster (will be added as source_security_group_id to the default security group)"
+  description = "List of security group IDs to be allowed to connect to the cluster"
 }
 
 variable "ingress_port_range_start" {
@@ -79,7 +79,7 @@ variable "ingress_port_range_end" {
 variable "allowed_cidr_blocks" {
   type        = list(string)
   default     = []
-  description = "List of CIDR blocks to be allowed to connect to the cluster (will be added as cidr_blocks to the default security group)"
+  description = "List of CIDR blocks to be allowed to connect to the cluster"
 }
 
 variable "additional_security_groups" {
