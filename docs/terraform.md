@@ -18,6 +18,7 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| additional_security_groups | List of custom created security group IDs to be allowed to connect to the cluster | list(string) | `<list>` | no |
 | advanced\_options | Key-value string pairs to specify advanced configuration options | `map(string)` | `{}` | no |
 | allowed\_cidr\_blocks | List of CIDR blocks to be allowed to connect to the cluster | `list(string)` | `[]` | no |
 | attributes | Additional attributes (e.g. `1`) | `list(string)` | `[]` | no |
@@ -44,6 +45,7 @@
 | enabled | Set to false to prevent the module from creating any resources | `bool` | `true` | no |
 | encrypt\_at\_rest\_enabled | Whether to enable encryption at rest | `bool` | `true` | no |
 | encrypt\_at\_rest\_kms\_key\_id | The KMS key ID to encrypt the Elasticsearch domain with. If not specified, then it defaults to using the AWS/Elasticsearch service KMS key | `string` | `""` | no |
+| create_default_iam_role | Whether to create a default access role | bool | `true` | no |
 | environment | Environment, e.g. 'prod', 'staging', 'dev', 'pre-prod', 'UAT' | `string` | `""` | no |
 | iam\_actions | List of actions to allow for the IAM roles, _e.g._ `es:ESHttpGet`, `es:ESHttpPut`, `es:ESHttpPost` | `list(string)` | `[]` | no |
 | iam\_authorizing\_role\_arns | List of IAM role ARNs to permit to assume the Elasticsearch user role | `list(string)` | `[]` | no |
@@ -71,6 +73,7 @@
 | vpc\_enabled | Set to false if ES should be deployed outside of VPC. | `bool` | `true` | no |
 | vpc\_id | VPC ID | `string` | `null` | no |
 | zone\_awareness\_enabled | Enable zone awareness for Elasticsearch cluster | `bool` | `true` | no |
+
 
 ## Outputs
 
