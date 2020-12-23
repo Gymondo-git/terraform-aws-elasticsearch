@@ -3,7 +3,7 @@
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.12.26 |
+| terraform | >= 0.12.0 |
 | aws | >= 2.0 |
 | null | >= 2.0 |
 | template | >= 2.0 |
@@ -18,7 +18,6 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| additional_security_groups | List of custom created security group IDs to be allowed to connect to the cluster | list(string) | `<list>` | no |
 | additional\_tag\_map | Additional tags for appending to tags\_as\_list\_of\_maps. Not added to `tags`. | `map(string)` | `{}` | no |
 | advanced\_options | Key-value string pairs to specify advanced configuration options | `map(string)` | `{}` | no |
 | advanced\_security\_options\_enabled | AWS Elasticsearch Kibana enchanced security plugin enabling (forces new resource) | `bool` | `false` | no |
@@ -53,7 +52,6 @@
 | enabled | Set to false to prevent the module from creating any resources | `bool` | `null` | no |
 | encrypt\_at\_rest\_enabled | Whether to enable encryption at rest | `bool` | `true` | no |
 | encrypt\_at\_rest\_kms\_key\_id | The KMS key ID to encrypt the Elasticsearch domain with. If not specified, then it defaults to using the AWS/Elasticsearch service KMS key | `string` | `""` | no |
-| create_default_iam_role | Whether to create a default access role | bool | `true` | no |
 | environment | Environment, e.g. 'uw2', 'us-west-2', OR 'prod', 'staging', 'dev', 'UAT' | `string` | `null` | no |
 | iam\_actions | List of actions to allow for the IAM roles, _e.g._ `es:ESHttpGet`, `es:ESHttpPut`, `es:ESHttpPost` | `list(string)` | `[]` | no |
 | iam\_authorizing\_role\_arns | List of IAM role ARNs to permit to assume the Elasticsearch user role | `list(string)` | `[]` | no |
@@ -89,7 +87,6 @@
 | warm\_enabled | Whether AWS UltraWarm is enabled | `bool` | `false` | no |
 | warm\_type | Type of UltraWarm nodes | `string` | `"ultrawarm1.medium.elasticsearch"` | no |
 | zone\_awareness\_enabled | Enable zone awareness for Elasticsearch cluster | `bool` | `true` | no |
-
 
 ## Outputs
 

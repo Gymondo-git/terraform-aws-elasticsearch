@@ -1,57 +1,3 @@
-variable "namespace" {
-  type        = string
-  default     = ""
-  description = "Namespace, which could be your organization name or abbreviation, e.g. 'eg' or 'cp'"
-}
-
-variable "environment" {
-  type        = string
-  default     = ""
-  description = "Environment, e.g. 'prod', 'staging', 'dev', 'pre-prod', 'UAT'"
-}
-
-variable "stage" {
-  type        = string
-  default     = ""
-  description = "Stage, e.g. 'prod', 'staging', 'dev', OR 'source', 'build', 'test', 'deploy', 'release'"
-}
-
-variable "name" {
-  type        = string
-  default     = ""
-  description = "Solution name, e.g. 'app' or 'jenkins'"
-}
-
-variable "enabled" {
-  type        = bool
-  default     = true
-  description = "Set to false to prevent the module from creating any resources"
-}
-
-variable "delimiter" {
-  type        = string
-  default     = "-"
-  description = "Delimiter to be used between `namespace`, `environment`, `stage`, `name` and `attributes`"
-}
-
-variable "attributes" {
-  type        = list(string)
-  default     = []
-  description = "Additional attributes (e.g. `1`)"
-}
-
-variable "label_order" {
-  type        = list(string)
-  default     = []
-  description = "The naming order of the id output and Name tag"
-}
-
-variable "tags" {
-  type        = map(string)
-  default     = {}
-  description = "Additional tags (e.g. `map('BusinessUnit','XYZ')`"
-}
-
 variable "create_default_security_group" {
   type    = bool
   default = true
@@ -131,9 +77,27 @@ variable "instance_count" {
 }
 
 variable "create_default_iam_role" {
-  type        = bool
+  type = bool
   description = "Whether to create a default access role"
-  default     = true
+  default = true
+}
+
+variable "warm_enabled" {
+  type        = bool
+  default     = false
+  description = "Whether AWS UltraWarm is enabled"
+}
+
+variable "warm_count" {
+  type        = number
+  default     = 2
+  description = "Number of UltraWarm nodes"
+}
+
+variable "warm_type" {
+  type        = string
+  default     = "ultrawarm1.medium.elasticsearch"
+  description = "Type of UltraWarm nodes"
 }
 
 variable "iam_role_arns" {
@@ -221,6 +185,12 @@ variable "log_publishing_search_enabled" {
   description = "Specifies whether log publishing option for SEARCH_SLOW_LOGS is enabled or not"
 }
 
+variable "log_publishing_audit_enabled" {
+  type        = bool
+  default     = false
+  description = "Specifies whether log publishing option for AUDIT_LOGS is enabled or not"
+}
+
 variable "log_publishing_application_enabled" {
   type        = bool
   default     = false
@@ -237,6 +207,12 @@ variable "log_publishing_search_cloudwatch_log_group_arn" {
   type        = string
   default     = ""
   description = "ARN of the CloudWatch log group to which log for SEARCH_SLOW_LOGS needs to be published"
+}
+
+variable "log_publishing_audit_cloudwatch_log_group_arn" {
+  type        = string
+  default     = ""
+  description = "ARN of the CloudWatch log group to which log for AUDIT_LOGS needs to be published"
 }
 
 variable "log_publishing_application_cloudwatch_log_group_arn" {
@@ -283,7 +259,6 @@ variable "elasticsearch_subdomain_name" {
 
 variable "kibana_subdomain_name" {
   type        = string
-  default     = "kibana"
   description = "The name of the subdomain for Kibana in the DNS zone (_e.g._ `kibana`, `ui`, `ui-es`, `search-ui`, `kibana.elasticsearch`)"
 }
 
@@ -335,7 +310,49 @@ variable "aws_ec2_service_name" {
   description = "AWS EC2 Service Name"
 }
 
-locals {
+variable "domain_hostname_enabled" {
+  type        = bool
+  description = "Explicit flag to enable creating a DNS hostname for ES. If `true`, then `var.dns_zone_id` is required."
+  default     = false
+}
+
+variable "kibana_hostname_enabled" {
+  type        = bool
+  description = "Explicit flag to enable creating a DNS hostname for Kibana. If `true`, then `var.dns_zone_id` is required."
+  default     = false
+}
+
+variable "advanced_security_options_enabled" {
+  type        = bool
+  default     = false
+  description = "AWS Elasticsearch Kibana enchanced security plugin enabling (forces new resource)"
+}
+
+variable "advanced_security_options_internal_user_database_enabled" {
+  type        = bool
+  default     = false
+  description = "Whether to enable or not internal Kibana user database for ELK OpenDistro security plugin"
+}
+
+variable "advanced_security_options_master_user_arn" {
+  type        = string
+  default     = ""
+  description = "ARN of IAM user who is to be mapped to be Kibana master user (applicable if advanced_security_options_internal_user_database_enabled set to false)"
+}
+
+variable "advanced_security_options_master_user_name" {
+  type        = string
+  default     = ""
+  description = "Master user username (applicable if advanced_security_options_internal_user_database_enabled set to true)"
+}
+
+variable "advanced_security_options_master_user_password" {
+  type        = string
+  default     = ""
+  description = "Master user password (applicable if advanced_security_options_internal_user_database_enabled set to true)"
+}
+
+locals   {
   trimmed_iam_role_arns = distinct(compact(var.iam_role_arns))
   # if var.create_default_iam_role is set to true, add the roles arn to the list of allowed principals
   iam_role_arns = var.create_default_iam_role ? concat(local.trimmed_iam_role_arns, aws_iam_role.elasticsearch_user.*.arn) : local.trimmed_iam_role_arns
